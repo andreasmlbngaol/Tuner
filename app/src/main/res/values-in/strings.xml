@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Tuner</string>
+    <string name="header_eyebrow">GITAR</string>
+    <string name="reference_pill">A4 · %1$d Hz</string>
+
+    <!-- Mode -->
+    <string name="mode_strings">Senar</string>
+    <string name="mode_chromatic">Kromatik</string>
+
+    <!-- Stem -->
+    <string name="tuning_label">Stem</string>
+    <string name="change_tuning">Ubah stem</string>
+    <string name="tuning_standard">Standar E</string>
+    <string name="tuning_drop_d">Drop D</string>
+    <string name="tuning_half_step_down">Turun setengah nada</string>
+    <string name="tuning_full_step_down">Turun satu nada</string>
+    <string name="tuning_dadgad">DADGAD</string>
+    <string name="tuning_open_g">Open G</string>
+    <string name="tuning_open_d">Open D</string>
+
+    <!-- Gauge dan umpan balik -->
+    <plurals name="gauge_description">
+        <item quantity="other">%1$s, selisih %2$d sen</item>
+    </plurals>
+    <string name="listening_short">Mendengarkan</string>
+    <string name="listening_hint">Petik senar untuk mulai</string>
+    <string name="microphone_paused">Mikrofon dijeda</string>
+    <string name="waiting_for_note">Menunggu nada</string>
+    <string name="in_tune">Pas</string>
+    <string name="in_tune_short">Pas</string>
+    <string name="tune_up">Naikkan</string>
+    <string name="tune_down">Turunkan</string>
+    <string name="target_frequency">Target %1$.1f Hz</string>
+    <string name="frequency_format">%1$.1f Hz</string>
+    <string name="cents_value">%1$d¢</string>
+    <string name="stat_frequency">FREKUENSI</string>
+    <string name="stat_target">TARGET</string>
+    <string name="stat_reference">A4</string>
+
+    <!-- Senar -->
+    <string name="strings_label">Senar</string>
+    <string name="strings_auto">Otomatis</string>
+    <string name="strings_auto_description">Deteksi senar otomatis</string>
+    <string name="string_item_description">Senar %1$d, %2$s</string>
+    <string name="string_playing">Memutar senar %1$d, %2$s</string>
+
+    <!-- Error audio -->
+    <string name="audio_error_title">Mikrofon tidak tersedia</string>
+    <string name="audio_error_body">Mungkin sedang dipakai aplikasi lain. Tutup aplikasi itu lalu coba lagi.</string>
+    <string name="retry">Coba lagi</string>
+    <string name="dismiss">Tutup</string>
+
+    <!-- Izin -->
+    <string name="permission_eyebrow">TUNER</string>
+    <string name="permission_title">Akses mikrofon</string>
+    <string name="permission_body">Tuner memakai mikrofon untuk mendeteksi nada senar yang kamu petik.</string>
+    <string name="permission_privacy">Audio dianalisis di perangkat ini secara real time. Tidak ada rekaman yang disimpan atau diunggah.</string>
+    <string name="permission_grant">Izinkan mikrofon</string>
+    <string name="permission_open_settings">Buka pengaturan</string>
+    <string name="permission_denied_body">Akses mikrofon dimatikan. Aktifkan di pengaturan sistem untuk mulai menyetel.</string>
+
+    <!-- Pengaturan -->
+    <string name="settings_title">Pengaturan</string>
+    <string name="reference_pitch_title">Nada referensi</string>
+    <string name="reference_pitch_body">Referensi A4 untuk semua senar</string>
+    <string name="section_appearance">Tampilan</string>
+    <string name="section_feedback">Umpan balik</string>
+    <string name="theme_system">Sistem</string>
+    <string name="theme_light">Terang</string>
+    <string name="theme_dark">Gelap</string>
+    <string name="dynamic_color_title">Warna dinamis</string>
+    <string name="dynamic_color_body">Mengikuti palet wallpaper</string>
+    <string name="dynamic_color_unsupported">Butuh Android 12 atau lebih baru</string>
+    <string name="haptics_title">Getaran</string>
+    <string name="haptics_body">Getaran saat senar sudah pas</string>
+    <string name="privacy_note">Sinyal mikrofon diproses di perangkat secara real time. Tidak ada audio yang disimpan atau dikirim.</string>
+    <string name="decrease">Kurangi</string>
+    <string name="increase">Tambah</string>
+    <string name="hertz_value">%1$d Hz</string>
+    <string name="hertz_unit">Hz</string>
+    <string name="footer_note">A4 = %1$d Hz · Diproses di perangkat ini</string>
+</resources>

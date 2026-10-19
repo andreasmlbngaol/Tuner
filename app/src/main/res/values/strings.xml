@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Tuner</string>
+    <string name="header_eyebrow">GUITAR</string>
+    <string name="reference_pill">A4 · %1$d Hz</string>
+
+    <!-- Modes -->
+    <string name="mode_strings">Strings</string>
+    <string name="mode_chromatic">Chromatic</string>
+
+    <!-- Tunings -->
+    <string name="tuning_label">Tuning</string>
+    <string name="change_tuning">Change tuning</string>
+    <string name="tuning_standard">Standard E</string>
+    <string name="tuning_drop_d">Drop D</string>
+    <string name="tuning_half_step_down">Half step down</string>
+    <string name="tuning_full_step_down">Full step down</string>
+    <string name="tuning_dadgad">DADGAD</string>
+    <string name="tuning_open_g">Open G</string>
+    <string name="tuning_open_d">Open D</string>
+
+    <!-- Gauge and feedback -->
+    <plurals name="gauge_description">
+        <item quantity="one">%1$s, %2$d cent off</item>
+        <item quantity="other">%1$s, %2$d cents off</item>
+    </plurals>
+    <string name="listening_short">Listening</string>
+    <string name="listening_hint">Pluck a string to begin</string>
+    <string name="microphone_paused">Microphone paused</string>
+    <string name="waiting_for_note">Waiting for a note</string>
+    <string name="in_tune">In tune</string>
+    <string name="in_tune_short">In tune</string>
+    <string name="tune_up">Tune up</string>
+    <string name="tune_down">Tune down</string>
+    <string name="target_frequency">Target %1$.1f Hz</string>
+    <string name="frequency_format">%1$.1f Hz</string>
+    <string name="cents_value">%1$d¢</string>
+    <string name="stat_frequency">FREQUENCY</string>
+    <string name="stat_target">TARGET</string>
+    <string name="stat_reference">A4</string>
+
+    <!-- Strings -->
+    <string name="strings_label">Strings</string>
+    <string name="strings_auto">Auto</string>
+    <string name="strings_auto_description">Auto string detection</string>
+    <string name="string_item_description">String %1$d, %2$s</string>
+    <string name="string_playing">Playing string %1$d, %2$s</string>
+
+    <!-- Audio errors -->
+    <string name="audio_error_title">Microphone unavailable</string>
+    <string name="audio_error_body">Another app may be using it. Close it and try again.</string>
+    <string name="retry">Retry</string>
+    <string name="dismiss">Dismiss</string>
+
+    <!-- Permission -->
+    <string name="permission_eyebrow">TUNER</string>
+    <string name="permission_title">Microphone access</string>
+    <string name="permission_body">Tuner uses the microphone to detect the pitch of the string you play.</string>
+    <string name="permission_privacy">Audio is analysed on this device in real time. Nothing is recorded or uploaded.</string>
+    <string name="permission_grant">Allow microphone</string>
+    <string name="permission_open_settings">Open settings</string>
+    <string name="permission_denied_body">Microphone access is turned off. Enable it in system settings to start tuning.</string>
+
+    <!-- Settings -->
+    <string name="settings_title">Settings</string>
+    <string name="reference_pitch_title">Reference pitch</string>
+    <string name="reference_pitch_body">A4 reference for all strings</string>
+    <string name="section_appearance">Appearance</string>
+    <string name="section_feedback">Feedback</string>
+    <string name="theme_system">System</string>
+    <string name="theme_light">Light</string>
+    <string name="theme_dark">Dark</string>
+    <string name="dynamic_color_title">Dynamic colour</string>
+    <string name="dynamic_color_body">Follow the wallpaper palette</string>
+    <string name="dynamic_color_unsupported">Needs Android 12 or newer</string>
+    <string name="haptics_title">Haptics</string>
+    <string name="haptics_body">A gentle tap when a string is in tune</string>
+    <string name="privacy_note">The microphone signal is processed on-device in real time. No audio is stored or sent anywhere.</string>
+    <string name="decrease">Decrease</string>
+    <string name="increase">Increase</string>
+    <string name="hertz_value">%1$d Hz</string>
+    <string name="hertz_unit">Hz</string>
+    <string name="footer_note">A4 = %1$d Hz · Processed on this device</string>
+</resources>
