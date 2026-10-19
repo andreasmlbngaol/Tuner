@@ -11,6 +11,7 @@ import id.andreasmlbngaol.tuner.audio.TunerEngine
 import id.andreasmlbngaol.tuner.data.MAX_REFERENCE_PITCH
 import id.andreasmlbngaol.tuner.data.MIN_REFERENCE_PITCH
 import id.andreasmlbngaol.tuner.data.NoteMath
+import id.andreasmlbngaol.tuner.data.StringMatcher
 import id.andreasmlbngaol.tuner.data.ThemeMode
 import id.andreasmlbngaol.tuner.data.TunerMode
 import id.andreasmlbngaol.tuner.data.TunerPreferences
@@ -63,6 +64,8 @@ class TunerViewModel(application: Application) : AndroidViewModel(application) {
     private var smoothedFrequency = 0.0
     private var lastClarity = 0f
     private var lastSignalAt = 0L
+    private var lastAutoString: Int? = null
+    private var outlierFrames = 0
 
     /**
      * Collects microphone frames until the calling scope is cancelled (for
@@ -107,6 +110,7 @@ class TunerViewModel(application: Application) : AndroidViewModel(application) {
     fun setTuning(tuning: TuningPreset) {
         if (_uiState.value.tuning == tuning) return
         preferences.tuning = tuning
+        lastAutoString = null
         _uiState.update { it.copy(tuning = tuning) }
         recalculate()
     }
@@ -133,6 +137,7 @@ class TunerViewModel(application: Application) : AndroidViewModel(application) {
 
         if (state.selectedString != null && state.selectedString != index) {
             preferences.selectedString = index
+            lastAutoString = index
             _uiState.update { it.copy(selectedString = index) }
             recalculate()
         }
@@ -162,6 +167,7 @@ class TunerViewModel(application: Application) : AndroidViewModel(application) {
     fun setSelectedString(index: Int?) {
         if (_uiState.value.selectedString == index) return
         preferences.selectedString = index
+        lastAutoString = index
         _uiState.update { it.copy(selectedString = index) }
         recalculate()
     }
@@ -170,6 +176,7 @@ class TunerViewModel(application: Application) : AndroidViewModel(application) {
         val clamped = value.coerceIn(MIN_REFERENCE_PITCH, MAX_REFERENCE_PITCH)
         if (_uiState.value.referencePitch == clamped) return
         preferences.referencePitch = clamped
+        lastAutoString = null
         _uiState.update { it.copy(referencePitch = clamped) }
         recalculate()
     }
@@ -199,7 +206,23 @@ class TunerViewModel(application: Application) : AndroidViewModel(application) {
 
         recentFrequencies.addLast(result.frequency)
         while (recentFrequencies.size > MEDIAN_WINDOW) recentFrequencies.removeFirst()
+        if (recentFrequencies.size < WARMUP_FRAMES) return
         val median = recentFrequencies.sorted()[recentFrequencies.size / 2]
+
+        // Ignore short octave/harmonic jumps. A real string change persists for
+        // a few frames and is accepted after the counter reaches the limit.
+        if (smoothedFrequency > 0.0 &&
+            abs(NoteMath.centsBetween(median, smoothedFrequency)) > MAX_JUMP_CENTS
+        ) {
+            outlierFrames++
+            if (outlierFrames < OUTLIER_FRAMES) return
+            recentFrequencies.clear()
+            smoothedFrequency = 0.0
+            outlierFrames = 0
+        } else {
+            outlierFrames = 0
+        }
+
         smoothedFrequency = if (smoothedFrequency == 0.0) {
             median
         } else {
@@ -236,34 +259,27 @@ class TunerViewModel(application: Application) : AndroidViewModel(application) {
             )
         }
 
-        val index = state.selectedString ?: nearestStringIndex(frequency, state.tuning, reference)
+        val index = state.selectedString ?: StringMatcher.nearestIndex(
+            frequency = frequency,
+            tuning = state.tuning,
+            referencePitch = reference,
+            previous = lastAutoString,
+        )
+        if (state.selectedString == null) lastAutoString = index
+
         val targetMidi = state.tuning.midis[index]
         val targetFrequency = NoteMath.midiToFrequency(targetMidi.toDouble(), reference)
+        // Report the fundamental of the target octave, not a harmonic that
+        // YIN may have picked up.
+        val folded = NoteMath.foldToNearestOctave(frequency, targetFrequency)
         return TunerReading(
-            frequency = frequency,
+            frequency = folded,
             clarity = clarity,
             midi = targetMidi,
-            cents = NoteMath.centsBetween(frequency, targetFrequency),
+            cents = NoteMath.centsBetween(folded, targetFrequency),
             targetFrequency = targetFrequency,
             stringIndex = index,
         )
-    }
-
-    private fun nearestStringIndex(
-        frequency: Double,
-        tuning: TuningPreset,
-        reference: Double,
-    ): Int {
-        var bestIndex = 0
-        var bestDistance = Double.MAX_VALUE
-        tuning.midis.forEachIndexed { index, midi ->
-            val distance = abs(NoteMath.centsBetween(frequency, NoteMath.midiToFrequency(midi.toDouble(), reference)))
-            if (distance < bestDistance) {
-                bestDistance = distance
-                bestIndex = index
-            }
-        }
-        return bestIndex
     }
 
     private fun recalculate() {
@@ -281,11 +297,15 @@ class TunerViewModel(application: Application) : AndroidViewModel(application) {
         smoothedFrequency = 0.0
         lastClarity = 0f
         lastSignalAt = 0L
+        outlierFrames = 0
     }
 
     private companion object {
-        const val MEDIAN_WINDOW = 5
-        const val SMOOTHING = 0.4
-        const val SILENCE_TIMEOUT_MS = 900L
+        const val MEDIAN_WINDOW = 7
+        const val WARMUP_FRAMES = 3
+        const val SMOOTHING = 0.3
+        const val SILENCE_TIMEOUT_MS = 1_100L
+        const val MAX_JUMP_CENTS = 700.0
+        const val OUTLIER_FRAMES = 3
     }
 }

@@ -32,7 +32,7 @@ class YinPitchDetector(
             energy += samples[i] * samples[i]
         }
         val rms = sqrt(energy / length)
-        if (rms < 1e-4) return null
+        if (rms < MIN_RMS) return null
 
         val tauMin = max(2, (sampleRate / maxFrequency).toInt())
         val tauMax = min(length / 2 - 1, (sampleRate / minFrequency).toInt())
@@ -93,7 +93,8 @@ class YinPitchDetector(
     }
 
     private companion object {
-        const val THRESHOLD = 0.14
-        const val MIN_CLARITY = 0.62f
+        const val THRESHOLD = 0.12
+        const val MIN_CLARITY = 0.75f
+        const val MIN_RMS = 0.006f
     }
 }

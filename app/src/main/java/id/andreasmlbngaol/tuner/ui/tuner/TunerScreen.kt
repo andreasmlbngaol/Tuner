@@ -446,7 +446,7 @@ private fun feedbackUi(
             title = stringResource(R.string.in_tune),
         )
         Feedback.LISTENING -> FeedbackUi(
-            accent = colors.onSurfaceVariant,
+            accent = colors.primary,
             container = colors.surfaceContainerHighest,
             onContainer = colors.onSurface,
             icon = Icons.Rounded.GraphicEq,

@@ -82,8 +82,12 @@ palette follows the wallpaper; otherwise a warm amber palette is used.
 - YIN uses the cumulative mean normalised difference function, a 0.14
   threshold, dip-walking after the threshold crossing, and parabolic
   interpolation for the final period.
-- Readings are median-filtered over five frames and smoothed with an EMA
-  (0.4). A 900 ms silence timeout clears the reading.
+- Readings are median-filtered over seven frames and smoothed with an EMA
+  (0.3). A three-frame warm-up and a 0.006 RMS gate keep room noise from
+  producing a reading; a 1.1 s silence timeout clears it.
+- Octave folding maps harmonics back to the intended string: a 392 Hz second
+  harmonic of G3 is read as G3, not E4. Auto selection also uses a 60-cent
+  hysteresis and ignores jumps larger than 700 cents for three frames.
 - Detection runs on `Dispatchers.Default`; only state updates touch the main
   thread.
 - Reference tones are rendered with additive harmonics and a plucked-string

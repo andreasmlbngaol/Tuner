@@ -3,6 +3,7 @@ package id.andreasmlbngaol.tuner
 import id.andreasmlbngaol.tuner.audio.ToneSynth
 import id.andreasmlbngaol.tuner.audio.YinPitchDetector
 import id.andreasmlbngaol.tuner.data.NoteMath
+import id.andreasmlbngaol.tuner.data.StringMatcher
 import id.andreasmlbngaol.tuner.data.TuningPreset
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertNotNull
@@ -99,6 +100,70 @@ class TunerMathTest {
     fun yin_ignoresSilence() {
         val detector = YinPitchDetector(sampleRate = 22_050)
         assertNull(detector.detect(FloatArray(2048)))
+    }
+
+    @Test
+    fun octaveFolding_keepsGHarmonicOnTheGString() {
+        assertEquals(196.0, NoteMath.foldToNearestOctave(392.0, 196.0), 0.001)
+        assertEquals(196.0, NoteMath.foldToNearestOctave(98.0, 196.0), 0.001)
+        assertEquals(329.6276, NoteMath.foldToNearestOctave(329.6276, 329.6276), 0.001)
+    }
+
+    @Test
+    fun stringMatcher_mapsOctaveErrorToGString() {
+        // G3 is 196 Hz. A detector that reports its second harmonic must still
+        // resolve to the G string, not the high E string.
+        assertEquals(3, StringMatcher.nearestIndex(392.0, TuningPreset.STANDARD, 440.0))
+        assertEquals(3, StringMatcher.nearestIndex(392.0, TuningPreset.STANDARD, 440.0, previous = 5))
+        assertEquals(3, StringMatcher.nearestIndex(196.0, TuningPreset.STANDARD, 440.0))
+        assertEquals(5, StringMatcher.nearestIndex(329.6276, TuningPreset.STANDARD, 440.0))
+    }
+
+    @Test
+    fun stringMatcher_holdsPreviousStringNearTheMidpoint() {
+        // 171.4 Hz is about halfway between D3 and G3 in cents.
+        assertEquals(
+            2,
+            StringMatcher.nearestIndex(171.4, TuningPreset.STANDARD, 440.0, previous = 2),
+        )
+    }
+
+    @Test
+    fun stringMatcher_handlesGStringWithStrongSecondHarmonic() {
+        val detector = YinPitchDetector(sampleRate = 22_050)
+        val samples = FloatArray(2048) { index ->
+            val time = index / 22_050.0
+            (
+                0.2 * sin(2 * PI * 196.0 * time) +
+                    sin(2 * PI * 392.0 * time) +
+                    0.3 * sin(2 * PI * 588.0 * time)
+                ).toFloat() / 1.5f
+        }
+        val result = detector.detect(samples)
+        assertNotNull(result)
+        assertEquals(
+            3,
+            StringMatcher.nearestIndex(result!!.frequency, TuningPreset.STANDARD, 440.0),
+        )
+    }
+
+    @Test
+    fun stringMatcher_keepsRealHighEOnTheHighEString() {
+        val detector = YinPitchDetector(sampleRate = 22_050)
+        val samples = FloatArray(2048) { index ->
+            val time = index / 22_050.0
+            (
+                0.2 * sin(2 * PI * 329.6276 * time) +
+                    sin(2 * PI * 659.2551 * time) +
+                    0.3 * sin(2 * PI * 988.8827 * time)
+                ).toFloat() / 1.5f
+        }
+        val result = detector.detect(samples)
+        assertNotNull(result)
+        assertEquals(
+            5,
+            StringMatcher.nearestIndex(result!!.frequency, TuningPreset.STANDARD, 440.0),
+        )
     }
 
     @Test

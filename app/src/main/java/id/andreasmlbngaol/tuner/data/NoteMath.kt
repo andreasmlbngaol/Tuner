@@ -47,6 +47,21 @@ object NoteMath {
     }
 
     fun isInTune(cents: Double, tolerance: Double = 5.0): Boolean = abs(cents) <= tolerance
+
+    /**
+     * Moves [frequency] by whole octaves until it is within ±600 cents of
+     * [target]. A plucked string can make YIN report a harmonic as the
+     * fundamental; folding keeps the reading on the intended string.
+     */
+    fun foldToNearestOctave(frequency: Double, target: Double): Double {
+        if (frequency <= 0.0 || target <= 0.0) return frequency
+        var folded = frequency
+        while (folded > target * OCTAVE_FOLD_RATIO) folded /= 2.0
+        while (folded < target / OCTAVE_FOLD_RATIO) folded *= 2.0
+        return folded
+    }
+
+    private const val OCTAVE_FOLD_RATIO = 1.4142135623730951 // sqrt(2)
 }
 
 data class NoteInfo(
